@@ -1,0 +1,9 @@
+{
+  "name": "SwiftGif",
+  "version": "0.0.1",
+  "dependencies": {
+    "express": "*",
+    "mongoose": "*",
+    "jade": "~0.28.2"
+  }
+}

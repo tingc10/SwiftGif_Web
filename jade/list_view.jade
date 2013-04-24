@@ -1,0 +1,9 @@
+include mixins
+extends layout
+block content
+	if search
+		form(name="search", method="get")
+			input(type="text", name="tags")
+			input(type="submit", value="Filter by Tags")
+	for gif in gifs
+		mixin gif_list_block(gif, base_url)

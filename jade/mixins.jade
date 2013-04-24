@@ -1,0 +1,21 @@
+mixin gif_list_block(gif, base_url)
+	- var gif_id = gif.gif_id
+	- var d = gif.created_at
+	- var tags = gif.tags.join(" ")
+	.gif-wrapper
+		mixin jpg_img(gif_id, base_url)
+		.play-button
+			img(src="/images/playbutton.png")
+		.controls
+			h6= [d.getMonth()+1, d.getDate(), d.getFullYear()].join(" / ")
+				~~
+				a(href=base_url+"gif/" + gif_id) Link
+				~~ 
+				//- a(href=base_url+"global?tags=" + tags) #{tags}
+				for tag in gif.tags
+					a(href=base_url+"global?tags=" + tag) #{tag} 
+
+mixin jpg_img(gif_id, base_url)
+	- url = base_url + "images/covers/"
+	- url += (gif_id.toString() + ".jpg")
+	img(src=url, data-display-type="jpg", data-gif-id=gif_id.toString()).gif
