@@ -71,7 +71,7 @@ Server.get("/gif/:id", function(req, res) {
 		else if (!gif || !gif.gif_id) res.send("Gif Lookup Error!");
 		else {
 		try {
-			res.render(__dirname+"/jade/list_view", {gifs: [gif], base_url: constants.SG_BASE_URL, search: false});
+			res.render(__dirname+"/jade/list_view", {gifs: [gif], base_url: constants.SG_BASE_URL, search: false, iso: false});
 		} catch(e) {
 			res.send("Caught Error: " + e);
 		}
@@ -85,7 +85,7 @@ Server.get("/users/:id", function(req, res) {
 	if (tags) tags = tags.split(" ");
 	Gif.loadURLsByUserID(req.params.id, tags, function(err, gifs) {
 		try {
-			res.render(__dirname+"/jade/list_view", {gifs: gifs, base_url: constants.SG_BASE_URL, search: true});
+			res.render(__dirname+"/jade/list_view", {gifs: gifs, base_url: constants.SG_BASE_URL, search: true, iso: false});
 		} catch(e) {
 			res.send("");
 		}
@@ -99,10 +99,21 @@ Server.get("/global", function(req, res) {
 	Gif.loadAllGifs(tags, function(err, gifs) {
 		try {
 			console.log("Rendering " + gifs.length + " gifs");
-			res.render(__dirname+"/jade/list_view", {gifs: gifs, base_url: constants.SG_BASE_URL, search: true});
+			res.render(__dirname+"/jade/list_view", {gifs: gifs, base_url: constants.SG_BASE_URL, search: true, iso: false});
 		} catch(e) {
 			res.send("");
 		}
+	});
+});
+
+Server.get("/isotest",function(req, res) {
+	var tags = req.query.tags;
+	if (tags) tags = tags.split(" ");
+	Gif.loadAllGifs(tags, function(err, gifs) {
+		try {
+			console.log("Isotope test, rendering " + gifs.length + " gifs");
+			res.render(__dirname+"/jade/list_view", {gifs: gifs, base_url: constants.SG_BASE_URL, search:false, iso:true});
+		} catch(e) { res.send(e); }
 	});
 });
 

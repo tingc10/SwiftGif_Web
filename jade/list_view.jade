@@ -5,5 +5,28 @@ block content
 		form(name="search", method="get")
 			input(type="text", name="tags")
 			input(type="submit", value="Filter by Tags")
-	for gif in gifs
-		mixin gif_list_block(gif, base_url)
+	if iso
+		script(type='text/javascript')
+			$(window).load(function(){
+				$('#gif-container').isotope({
+					itemSelector: '.gif-wrapper',
+					layoutMode: 'masonry',
+					masonry: { columnWidth: 280 }
+				});
+				$('#filterButton').click(function(){
+					var f = '.' + $('#livetags').val().split(" ").join(", .");
+					$('#gif-container').isotope({
+						filter: f
+					});	
+				});
+				$('#livetags').keyup(function(event){
+					if(event.keyCode==13){ $('#filterButton').click(); }
+				});
+			});
+		input#livetags(type="text")
+		input#filterButton(type="button", value="Filter by Tags")
+	#gif-container
+		for gif in gifs
+			mixin gif_list_block(gif, base_url)
+	if !gifs.length
+		p There are no gifs to display!
