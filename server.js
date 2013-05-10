@@ -91,7 +91,7 @@ Server.get("/users/:id", function(req, res) {
 		}
 	});
 });
-
+/*
 Server.get("/global", function(req, res) {
 	console.error(req.query);
 	var tags = req.query.tags;
@@ -105,6 +105,23 @@ Server.get("/global", function(req, res) {
 		}
 	});
 });
+*/
+var globalFeed = function(req, res) {
+        console.error(req.query);
+        var tags = req.query.tags;
+        if (tags) tags = tags.split(" ");
+        Gif.loadAllGifs(tags, function(err, gifs) {
+                try {
+                        console.log("Rendering " + gifs.length + " gifs");
+                        res.render(__dirname+"/jade/list_view", {gifs: gifs, base_url: constants.SG_BASE_URL, search: true, iso: false});
+                } catch(e) {
+                        res.send("");
+                }
+        });
+};
+
+Server.get("/global", globalFeed);
+Server.get("/", globalFeed);
 
 Server.get("/isotest",function(req, res) {
 	var tags = req.query.tags;
