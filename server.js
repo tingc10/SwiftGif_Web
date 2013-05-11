@@ -63,6 +63,7 @@ Server.post("/upload", function(req, res) {
 	});
 });
 
+
 Server.get("/gif/:id", function(req, res) {
 	console.log("GET gif id:" + req.params.id);
 	Gif.findOne({gif_id: req.params.id}, function(err, gif) {
@@ -145,17 +146,29 @@ Server.get("/check_username/:uname", function(req, res) {
 Server.post("/set_username", function(req, res) {
 	var uname = req.body.username;
 	var uid = req.body.user_id;
-	console.log("Request to set username of " + uid + " to " + uname);
-	User.isUsernameFree(uname, function(isfree) {
-		if (isfree) {
-			User.update( {user_id: uid}, {username: uname}, {multi:false}, function(err,num) { 
-	if (err || num != 1) res.send("no: " + err + ", num affected: " + num);
-	else res.send("yes");
+	if (uid == "SPECIAL_NEEDS_ID") {
+		console.log("Request to set username of new user!");
+		User.createUser(function(err, user) {
+			uid = user.user_id;
+			console.log("Created user with id " + uid);
+			setUsername(uid, uname, res);
+		});
+	}
+	else setUsername(uid, uname, res);
 });
-		}
-		else res.send("no");
-	});
-});
+
+function setUsername(uid, uname, res) {
+	console.log("Attempt to set username of " + uid + " to " + uname);
+        User.isUsernameFree(uname, function(isfree) {
+                if (isfree) {
+                        User.update( {user_id: uid}, {username: uname}, {multi:false}, function(err,num) {
+        			if (err || num != 1) res.send("no: " + err + ", num affected: " + num);
+        			else res.send("yes" + uid);
+			});
+                }
+                else res.send("no");
+        });
+}
 
 Server.use(Express.errorHandler());
 
