@@ -108,15 +108,19 @@ Server.get("/global", function(req, res) {
 });
 */
 var globalFeed = function(req, res) {
+	// determine if iso should be turned on:
+	var nonMobile = isNonMobile(req);
+	
+	////////////////
         console.error(req.query);
         var tags = req.query.tags;
         if (tags) tags = tags.split(" ");
         Gif.loadAllGifs(tags, function(err, gifs) {
                 try {
                         console.log("Rendering " + gifs.length + " gifs");
-                        res.render(__dirname+"/jade/list_view", {gifs: gifs, base_url: constants.SG_BASE_URL, search: true, iso: false});
+                        res.render(__dirname+"/jade/list_view", {gifs: gifs, base_url: constants.SG_BASE_URL, search: true, iso: nonMobile});
                 } catch(e) {
-                        res.send("");
+                        res.send(e);
                 }
         });
 };
@@ -125,6 +129,7 @@ Server.get("/global", globalFeed);
 Server.get("/", globalFeed);
 
 Server.get("/isotest",function(req, res) {
+	// iso always on (nonMobile mode) no matter what
 	var tags = req.query.tags;
 	if (tags) tags = tags.split(" ");
 	Gif.loadAllGifs(tags, function(err, gifs) {
@@ -173,3 +178,13 @@ function setUsername(uid, uname, res) {
 Server.use(Express.errorHandler());
 
 Server.listen(80);
+
+
+// Some functions for detecting non-mobile browsers
+// in order to activate isotope view mode
+
+function isNonMobile(req) {
+	var ua = req.header('user-agent');
+	return !((/mobile/i).test(ua));
+}
+

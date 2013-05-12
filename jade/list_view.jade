@@ -1,7 +1,7 @@
 include mixins
 extends layout
 block content
-	if search
+	if search && !iso
 		form(name="search", method="get")
 			input(type="text", name="tags")
 			input(type="submit", value="Filter by Tags")
